@@ -2,87 +2,91 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, orientation=landscape">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AiroBol</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Arial Rounded MT Bold', sans-serif; background: #87CEEB; color: white; touch-action: none; }
-        .sky { position: fixed; width: 100%; height: 100%; background: linear-gradient(#87CEEB, #E0F7FA); z-index: -1; }
-        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: move linear infinite; }
-        @keyframes move { from { transform: translateX(-200px); } to { transform: translateX(110vw); } }
+        /* ОСНОВНОЙ СТИЛЬ - ГОРИЗОНТАЛЬНО */
+        body { margin: 0; overflow: hidden; font-family: 'Arial Black', sans-serif; color: white; touch-action: none; background: #87CEEB; }
+        
+        /* ФОН ИЗ ОБЛАКОВ (КАРТИНКА НА ВЕСЬ ЭКРАН) */
+        .background { 
+            position: fixed; width: 100vw; height: 100vh; 
+            background: url('https://img.freepik.com') no-repeat center center; 
+            background-size: cover; z-index: -1; 
+        }
 
-        /* ПРОФИЛЬ */
-        .profile { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 35px; backdrop-filter: blur(5px); z-index: 10; border: 1px solid rgba(255,255,255,0.2); }
-        .ava { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        /* ПРОФИЛЬ В УГЛУ */
+        .profile { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; background: rgba(0,0,0,0.4); padding: 5px 15px; border-radius: 30px; backdrop-filter: blur(5px); border: 2px solid rgba(255,255,255,0.3); }
+        .ava { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; background: #555; }
+        .info { margin-left: 10px; font-size: 14px; }
 
         /* ГЛАВНОЕ МЕНЮ */
-        .menu-container { display: flex; align-items: center; justify-content: center; height: 100vh; gap: 40px; }
-        .btn-circle { width: 90px; height: 90px; border-radius: 50%; border: none; background: #1E88E5; color: white; font-size: 40px; cursor: pointer; box-shadow: 0 6px #1565C0; display: flex; align-items: center; justify-content: center; }
-        .play-btn { width: 150px; height: 150px; font-size: 90px; background: #1E88E5; }
+        .container { display: flex; align-items: center; justify-content: center; height: 100vh; gap: 40px; }
+        .btn-circle { width: 80px; height: 80px; border-radius: 50%; border: none; background: #1E88E5; color: white; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 6px #1565C0; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        .play-btn { width: 130px; height: 130px; font-size: 60px; background: #1E88E5; }
 
-        /* МЕНЮ РЕЖИМОВ */
+        /* ВТОРОЕ МЕНЮ (РЕЖИМЫ) */
         #modeMenu { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); align-items: center; justify-content: center; gap: 20px; z-index: 20; }
-        .rect-btn { width: 200px; height: 100px; border-radius: 30px; border: none; background: #1E88E5; color: white; font-weight: bold; font-size: 18px; cursor: pointer; box-shadow: 0 6px #1565C0; }
-        .ranked-btn { background: #FFD700; color: #333; box-shadow: 0 6px #B8860B; }
+        .rect-btn { width: 180px; height: 80px; border-radius: 20px; border: none; background: #1E88E5; color: white; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 5px #1565C0; }
+        .ranked-btn { background: #FFD700; color: #333; box-shadow: 0 5px #B8860B; }
 
-        /* ЭКРАН ОЖИДАНИЯ */
-        #matchmaking { display: none; position: fixed; width: 100%; height: 100%; background: #1E88E5; flex-direction: column; align-items: center; justify-content: center; z-index: 100; }
-        .loader { width: 70px; height: 70px; border: 8px solid rgba(255,255,255,0.3); border-top: 8px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* СКИНЫ */
+        #skinMenu { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70%; background: white; border-radius: 20px; padding: 20px; text-align: center; color: #333; z-index: 30; }
+        .skin-option { display: inline-block; margin: 10px; }
+        .skin-circle { width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 10px; border: 3px solid #ccc; }
     </style>
 </head>
 <body>
-    <div class="sky" id="sky"></div>
+    <div class="background"></div>
 
-    <!-- Твой профиль в углу -->
-    <div class="profile" onclick="alert('Твой ID: #7421')">
-        <div class="ava">👤</div>
-        <div style="margin-left:12px">
-            <b id="pNick">Bobik</b><br>
-            <small id="pElo">🏆 1050</small>
+    <!-- Профиль -->
+    <div class="profile">
+        <div class="ava"></div>
+        <div class="info">
+            <b>Bobik</b><br>
+            <span style="color:#FFD700">ЭЛО: 0</span>
         </div>
     </div>
 
     <!-- Главные кнопки -->
-    <div class="menu-container" id="mainUI">
-        <button class="btn-circle" onclick="alert('Скины: Золотой Бобер 🦫 разблокирован!')">👕</button>
-        <button class="btn-circle play-btn" onclick="openModes()">»</button>
-        <button class="btn-circle">⚙️</button>
+    <div class="container" id="mainUI">
+        <button class="btn-circle" onclick="toggleSkins(true)">СКИНЫ</button>
+        <button class="btn-circle play-btn" onclick="toggleMenu(true)">»</button>
+        <button class="btn-circle" onclick="alert('Настройки: RU/EN')">НАСТР.</button>
     </div>
 
-    <!-- Выбор режима -->
+    <!-- Меню Режимов -->
     <div id="modeMenu">
-        <button class="rect-btn" onclick="alert('Запуск игры с ботом...')">С БОТОМ</button>
-        <button class="rect-btn ranked-btn" onclick="startSearch()">РАНГОВЫЙ БОЙ</button>
-        <button class="rect-btn" onclick="alert('Режим на одном устройстве')">С ДРУГОМ</button>
-        <button onclick="closeModes()" style="position:absolute; bottom:40px; color:white; background:none; border:none; font-size:22px; cursor:pointer;">← НАЗАД</button>
+        <button class="rect-btn" onclick="alert('Игра с ботом...')">БОТ</button>
+        <button class="rect-btn ranked-btn" onclick="alert('Поиск рангового боя...')">РАНГОВЫЙ</button>
+        <button class="rect-btn" onclick="alert('Режим на одном телефоне')">ДРУГ</button>
+        <button onclick="toggleMenu(false)" style="position:absolute; bottom:20px; color:white; background:none; border:none; font-size:18px;">← НАЗАД</button>
     </div>
 
-    <!-- Поиск соперника -->
-    <div id="matchmaking">
-        <div class="loader"></div>
-        <h2 style="margin-top:30px; letter-spacing: 2px;">ПОИСК СОПЕРНИКА...</h2>
-        <p>Твой рейтинг: 1050</p>
-        <button onclick="document.getElementById('matchmaking').style.display='none'" style="margin-top:40px; padding:15px 40px; background:#f44336; color:white; border:none; border-radius:15px; font-weight:bold; cursor:pointer;">ОТМЕНА</button>
+    <!-- Меню Скинов -->
+    <div id="skinMenu">
+        <h2>ВЫБОР СКИНА</h2>
+        <div class="skin-option">
+            <div class="skin-circle" style="background: red;"></div>
+            <b>БАЗОВЫЙ</b><br>
+            <button onclick="toggleSkins(false)">ВЫБРАТЬ</button>
+        </div>
+        <div class="skin-option">
+            <div class="skin-circle" style="background: gold; color: black; display: flex; align-items: center; justify-content: center; font-size: 10px; text-align: center;">GOLDEN BEAVER</div>
+            <b>БОБЕР</b><br>
+            <button disabled>1000 ЭЛО</button>
+        </div>
+        <br><br>
+        <button onclick="toggleSkins(false)">ЗАКРЫТЬ</button>
     </div>
 
     <script>
-        function openModes() { document.getElementById('modeMenu').style.display = 'flex'; }
-        function closeModes() { document.getElementById('modeMenu').style.display = 'none'; }
-        function startSearch() {
-            closeModes();
-            document.getElementById('matchmaking').style.display = 'flex';
+        function toggleMenu(show) {
+            document.getElementById('mainUI').style.display = show ? 'none' : 'flex';
+            document.getElementById('modeMenu').style.display = show ? 'flex' : 'none';
         }
-
-        // Плавные облака
-        for(let i=0; i<7; i++) {
-            let c = document.createElement('div');
-            c.className = 'cloud';
-            c.style.width = Math.random()*160+70+'px';
-            c.style.height='45px';
-            c.style.top = Math.random()*85+'vh';
-            c.style.left='-220px';
-            c.style.animationDuration = Math.random()*25+15+'s';
-            document.getElementById('sky').appendChild(c);
+        function toggleSkins(show) {
+            document.getElementById('skinMenu').style.display = show ? 'block' : 'none';
         }
     </script>
 </body>
